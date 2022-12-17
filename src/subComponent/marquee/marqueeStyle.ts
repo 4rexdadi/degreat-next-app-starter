@@ -47,3 +47,5 @@ export const MarqueeContainer = styled.span`
     }
   }
 `;
+
+export default MarqueeContainer;

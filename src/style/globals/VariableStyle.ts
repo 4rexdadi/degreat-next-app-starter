@@ -1,13 +1,14 @@
 // import
 import { createGlobalStyle } from "styled-components";
+import { convertPxtoRem } from "../../utils/maths";
 
 const styled = { createGlobalStyle };
 
 export const VariableStyle = styled.createGlobalStyle`
   :root {
     // spacing
-    --base-padding: 0.75rem;
-    --base-margin: 0.75rem;
+    --base-padding: ${convertPxtoRem(14)};
+    --base-margin: ${convertPxtoRem(14)};
 
     // box-shadow
     --base-box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.1);
@@ -33,3 +34,5 @@ export const VariableStyle = styled.createGlobalStyle`
     --ease-in-out-circ: cubic-bezier(0.785, 0.135, 0.15, 0.86);
   }
 `;
+
+export default VariableStyle;

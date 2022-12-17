@@ -10,20 +10,22 @@ export const ScrollbarContainer = styled.div`
   top: 0;
   z-index: 500;
   padding: ${convertPxtoRem(24)} 0;
+
+  .Inner {
+    height: 100%;
+    position: relative;
+  }
+
+  .Thumb {
+    min-height: ${convertPxtoRem(48)};
+    width: ${convertPxtoRem(1.5)};
+    background-color: var(--secondary);
+    position: absolute;
+    right: ${convertPxtoRem(8)};
+    border-radius: ${convertPxtoRem(4)};
+    border: ${convertPxtoRem(1)} solid transparent;
+    cursor: grab;
+  }
 `;
 
-export const Inner = styled.div`
-  height: 100%;
-  position: relative;
-`;
-
-export const Thumb = styled.div`
-  min-height: ${convertPxtoRem(48)};
-  width: ${convertPxtoRem(1.5)};
-  background-color: var(--secondary);
-  position: absolute;
-  right: ${convertPxtoRem(8)};
-  border-radius: ${convertPxtoRem(4)};
-  border: ${convertPxtoRem(1)} solid transparent;
-  cursor: grab;
-`;
+export default ScrollbarContainer;

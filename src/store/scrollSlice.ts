@@ -1,30 +1,29 @@
 // Imports
 import { createSlice } from "@reduxjs/toolkit";
-import store from "./index";
+import Lenis from "@studio-freight/lenis";
 
 // Slice
-export type AppDispatch = typeof store.dispatch;
-export interface scrollProps {
-	lenis: any;
-	overflow: boolean;
+export interface ScrollProps {
+  lenis: Lenis | undefined;
+  overflow: boolean;
 }
 
-const initialState: scrollProps = {
-	lenis: undefined,
-	overflow: true,
+const initialState: ScrollProps = {
+  lenis: undefined,
+  overflow: true,
 };
 
 const scrollSlice = createSlice({
-	name: "scroll",
-	initialState: initialState,
-	reducers: {
-		setLenis: (state, action) => {
-			state.lenis = action.payload;
-		},
-		setOverflow: (state, action) => {
-			state.overflow = action.payload;
-		},
-	},
+  name: "scroll",
+  initialState,
+  reducers: {
+    setLenis: (state, action) => {
+      state.lenis = action.payload;
+    },
+    setOverflow: (state, action) => {
+      state.overflow = action.payload;
+    },
+  },
 });
 
 export const { setLenis, setOverflow } = scrollSlice.actions;

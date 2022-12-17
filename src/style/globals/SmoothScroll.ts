@@ -33,3 +33,5 @@ export const SmoothScroll = styled.createGlobalStyle`
     }
   }
 `;
+
+export default SmoothScroll;

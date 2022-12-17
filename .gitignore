@@ -33,11 +33,18 @@ yarn-error.log*
 
 # next-pwa
 /public/workbox-*.js
+/public/workbox-*.js.map
+/public/worker-*.js
+/public/worker-*.js.map
 /public/sw.js
+/public/sw.js.map
 
 # prefer yarn than npm
 package-lock.json
 report.*.json
 
+/public/robots.txt
+/public/sitemap.xml
+/public/sitemap-0.xml
 
 .eslintcache

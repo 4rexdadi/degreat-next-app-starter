@@ -4,6 +4,7 @@ import { createGlobalStyle } from "styled-components";
 const styled = { createGlobalStyle };
 
 export const FontStyle = styled.createGlobalStyle`
+  // imports and use local fonts using @font-face
   @font-face {
     font-family: "Brandon Grotesque Black";
     src: local("Brandon Grotesque Black"),
@@ -70,9 +71,11 @@ export const FontStyle = styled.createGlobalStyle`
   }
 
   body {
-    font-family: var(--base-font-regular);
+    /* font-family: var(--base-font-regular);
     font-size: var(--fontsm);
     line-height: var(--lhsm);
-    overflow-x: hidden;
+    overflow-x: hidden; */
   }
 `;
+
+export default FontStyle;

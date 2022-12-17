@@ -77,3 +77,5 @@ export const UtilityClassStyle = styled.createGlobalStyle`
     display: none;
   }
 `;
+
+export default UtilityClassStyle;

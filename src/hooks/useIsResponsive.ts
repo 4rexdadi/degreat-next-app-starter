@@ -1,7 +1,10 @@
+// Imports
 import { useEffect, useState } from "react";
 
-const useResponsive = () => {
+export const useResponsive = () => {
+  // get window innerWidth on initial load and call handleWindowSizeChange function on every client resize to update values
   const [width, setWidth] = useState(window.innerWidth);
+
   const handleWindowSizeChange = () => {
     setWidth(window.innerWidth);
   };
@@ -9,6 +12,7 @@ const useResponsive = () => {
   useEffect(() => {
     window.addEventListener("resize", handleWindowSizeChange);
     return () => {
+      // cleanup
       window.removeEventListener("resize", handleWindowSizeChange);
     };
   }, []);

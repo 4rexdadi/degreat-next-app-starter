@@ -1,35 +1,35 @@
+/* eslint-disable react/jsx-props-no-spreading */
+// Imports
 import type { AppProps } from "next/app";
-import CustomHeader from "../subComponent/config";
-import GlobalStyle from "../style/GlobalStyle";
-// imports
-import HeaderSection from "../components/homePage/headerSection/HeaderSection";
-import Loader from "../subComponent/loader/Loader";
 import { Provider } from "react-redux";
-import ScrollContainer from "../subComponent/scrollbarContainer/ScrollContainer";
-import store from "../store";
 
-function MyApp({ Component, pageProps }: AppProps) {
+import store from "../store";
+import CustomHeader from "../subComponent/config";
+import Loader from "../subComponent/loader/Loader";
+import ScrollContainer from "../subComponent/scrollbarContainer/ScrollContainer";
+// Import Global Styles...
+import GlobalStyle from "../style/GlobalStyle";
+
+const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
   return (
     <Provider store={store}>
-      <ScrollContainer>
-        <Loader />
+      <ScrollContainer mouseMultiplier={0.5} duration={1.2} infinite>
+        <Loader loadingSpeed={22} />
 
         <GlobalStyle />
 
-        <CustomHeader title={"Adedayo Aturu"} />
+        <CustomHeader title="New Project" />
 
-        <header>
-          <HeaderSection />
-        </header>
+        <header />
 
         <main>
           <Component {...pageProps} />
         </main>
 
-        <footer></footer>
+        <footer />
       </ScrollContainer>
     </Provider>
   );
-}
+};
 
 export default MyApp;

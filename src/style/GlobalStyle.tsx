@@ -6,7 +6,7 @@ import { SmoothScroll } from "./globals/SmoothScroll";
 import { UtilityClassStyle } from "./globals/UtilityClassStyle";
 import { VariableStyle } from "./globals/VariableStyle";
 
-function GlobalStyle() {
+const GlobalStyle = (): JSX.Element => {
   return (
     <>
       <FontStyle />
@@ -17,6 +17,6 @@ function GlobalStyle() {
       <SmoothScroll />
     </>
   );
-}
+};
 
 export default GlobalStyle;

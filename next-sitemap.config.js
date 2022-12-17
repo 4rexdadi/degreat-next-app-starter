@@ -1,7 +1,8 @@
 /** @type {import('next-sitemap').IConfig} */
+const siteUrl = process.env.WEBSITE_URL || "http://localhost:3000"
 
 module.exports = {
-  siteUrl: process.env.WEBSITE_URL || "https://example.com",
+  siteUrl,
   generateRobotsTxt: true, // (optional)
   robotsTxtOptions: {
     policies: [
@@ -14,6 +15,6 @@ module.exports = {
     additionalPaths: async (config) => [
       await config.transform(config, "/comments"),
     ],
-    additionalSitemaps: ["http://localhost:3000/serversite.xml"],
+    additionalSitemaps: [`${siteUrl}/serverSite.xml`],
   },
 };

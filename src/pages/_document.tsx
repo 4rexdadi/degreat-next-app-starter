@@ -1,9 +1,10 @@
+// Imports
 import Document, {
-  Html,
+  DocumentContext,
   Head,
+  Html,
   Main,
   NextScript,
-  DocumentContext,
 } from "next/document";
 import { ServerStyleSheet } from "styled-components";
 
@@ -16,6 +17,7 @@ export default class MyDocument extends Document {
       ctx.renderPage = () =>
         originalRenderPage({
           enhanceApp: (App) => (props) =>
+            // eslint-disable-next-line react/jsx-props-no-spreading
             sheet.collectStyles(<App {...props} />),
         });
 
@@ -33,7 +35,8 @@ export default class MyDocument extends Document {
       sheet.seal();
     }
   }
-  render() {
+
+  render(): JSX.Element {
     return (
       <Html lang="en">
         <Head />

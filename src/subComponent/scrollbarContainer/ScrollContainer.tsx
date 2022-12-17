@@ -6,9 +6,9 @@ import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { FC, ReactNode, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import useIsTouchDevice from "../../hooks/useIsTouchDevice";
-import useLayoutEffect from "../../hooks/useLayoutEffect";
-import { scrollProps, setLenis } from "../../store/scrollSlice";
+import { useIsTouchDevice } from "../../hooks/useIsTouchDevice";
+import { useLayoutEffect } from "../../hooks/useLayoutEffect";
+import { ScrollProps, setLenis } from "../../store/scrollSlice";
 import Cursor from "../cursor/Cursor";
 import Scrollbar from "./Scrollbar";
 
@@ -16,41 +16,75 @@ gsap.registerPlugin(ScrollTrigger);
 
 interface ScrollContainerProps {
   children: ReactNode;
+  mouseMultiplier: number;
+  infinite?: boolean;
+  duration?: number;
+  direction?: "vertical" | "horizontal";
+  gestureDirection?: "vertical" | "horizontal" | "both";
+  smooth?: boolean;
+  smoothTouch?: boolean;
+  touchMultiplier?: number;
 }
 
-const ScrollContainer: FC<ScrollContainerProps> = ({ children }) => {
-  const isTouchDevice = useIsTouchDevice();
+const ScrollContainer: FC<ScrollContainerProps> = ({
+  children,
+  mouseMultiplier = 1,
+  infinite = false,
+  duration = 1.2,
+  direction = "vertical",
+  gestureDirection = "vertical",
+  smooth = true,
+  smoothTouch = false,
+  touchMultiplier = 2,
+}) => {
   const dispatch = useDispatch();
-  const lenis = useSelector(
-    (state: { scrollSlice: scrollProps }) => state.scrollSlice.lenis
-  );
 
+  // Get isTouchDevice to enable and disable Cursor and Scrollbar
+  const isTouchDevice = useIsTouchDevice();
+
+  // Creating a smooth scroll with Lenis and overflow to disable scrolling when false
+  const lenis = useSelector(
+    (state: { scrollSlice: ScrollProps }) => state.scrollSlice.lenis
+  );
   const overflow = useSelector(
-    (state: { scrollSlice: scrollProps }) => state.scrollSlice.overflow
+    (state: { scrollSlice: ScrollProps }) => state.scrollSlice.overflow
   );
 
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
+
+    // Lenis smooth scrolling instantiation
     const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // https://www.desmos.com/calculator/brs54l4xou
-      direction: "vertical",
-      gestureDirection: "vertical",
-      smooth: true,
-      smoothTouch: false,
-      mouseMultiplier: 0.5,
-      touchMultiplier: 2,
-      // infinite: true,
+      duration,
+      easing: (t) => Math.min(1, 1.001 - 2 ** (-10 * t)), // https://www.desmos.com/calculator/brs54l4xou
+      direction,
+      gestureDirection,
+      smooth,
+      smoothTouch,
+      mouseMultiplier,
+      touchMultiplier,
+      infinite,
     });
 
+    // dispatch Lenis to be used globally
     dispatch(setLenis(lenis));
 
     return () => {
+      // cleanup
       lenis.destroy();
       setLenis(null);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [
+    infinite,
+    mouseMultiplier,
+    duration,
+    direction,
+    touchMultiplier,
+    gestureDirection,
+    smooth,
+    smoothTouch,
+  ]);
 
   useEffect(() => {
     if (overflow) {
@@ -63,6 +97,7 @@ const ScrollContainer: FC<ScrollContainerProps> = ({ children }) => {
   }, [lenis, overflow]);
 
   useLayoutEffect(() => {
+    // refresh ScrollTrigger so gsap works properly
     if (lenis) ScrollTrigger.refresh();
   }, [lenis]);
 
@@ -79,7 +114,7 @@ const ScrollContainer: FC<ScrollContainerProps> = ({ children }) => {
       {isTouchDevice === false && <Cursor />}
       {isTouchDevice === false && <Scrollbar />}
 
-      <>{children}</>
+      {children}
     </>
   );
 };

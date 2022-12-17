@@ -1,74 +1,98 @@
 // Imports
-import { useState, useEffect, RefObject } from "react";
+import {
+  MutableRefObject,
+  RefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
-function useOnScreen(ref: RefObject<HTMLDivElement>, threshold: number = 0.3) {
-  // State and setter for storing whether element is visible
+export const useOnScreen = (
+  ref:
+    | RefObject<HTMLElement>
+    | MutableRefObject<HTMLElement[]>
+    | null
+    | undefined,
+  threshold: number = 0.3,
+  once: boolean = false,
+  rootMargin: string = "0px"
+) => {
+  // use IntersectionObserver to determine if elements are visible or not
+  const observer = useRef<IntersectionObserver>();
+
   const [isIntersecting, setIntersecting] = useState<boolean>(false);
-  const [IntersectingElement, setIntersectingElement] = useState<boolean | {}>(
-    false
+
+  const [IntersectingElement, setIntersectingElement] =
+    useState<null | IntersectionObserverEntry>(null);
+
+  // Update our state when observer callback fires
+  const callbackFunction = useCallback(
+    (entries: IntersectionObserverEntry[]) =>
+      entries.forEach((entry) => {
+        setIntersecting(entry?.isIntersecting ?? false);
+        setIntersectingElement(entry);
+      }),
+    []
   );
 
   useEffect(() => {
-    const singleRef = ref.current;
+    const singleRef = ref?.current;
+    if (!singleRef) return undefined;
 
-    if (!Array.isArray(singleRef) && singleRef) {
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          // Update our state when observer callback fires
-          setIntersecting(entry?.isIntersecting ?? false);
-          setIntersectingElement(entry);
-        },
-        {
-          rootMargin: "0px",
-          threshold,
-        }
-      );
+    // check passed params are Arrays of elements or single element
+    // if single element observer single element
+    if (!Array.isArray(singleRef)) {
+      observer.current = new IntersectionObserver(callbackFunction, {
+        rootMargin,
+        threshold,
+      });
 
-      observer.observe(singleRef);
+      observer.current.observe(singleRef);
 
       return () => {
         if (singleRef) {
-          observer.unobserve(singleRef);
+          // cleanup
+          observer.current?.unobserve(singleRef);
         }
       };
     }
 
-    return;
-  }, [ref, threshold]);
+    // otherwise observer elements as Array
+    if (Array.isArray(singleRef) && singleRef[0]) {
+      const refs = singleRef;
 
-  useEffect(() => {
-    const refs = ref.current;
-
-    if (Array.isArray(refs) && refs[0]) {
-      const observer = new IntersectionObserver(
-        (entries) =>
-          entries.forEach((entry) => {
-            // Update our state when observer callback fires
-            setIntersecting(entry?.isIntersecting ?? false);
-            setIntersectingElement(entry);
-          }),
-        {
-          rootMargin: "0px",
-          threshold,
-        }
-      );
+      observer.current = new IntersectionObserver(callbackFunction, {
+        rootMargin,
+        threshold,
+      });
 
       refs.forEach((el) => {
-        observer.observe(el);
+        observer.current?.observe(el);
       });
 
       return () => {
         if (refs[0]) {
           refs.forEach((el) => {
-            observer.unobserve(el);
+            // cleanup
+            observer.current?.unobserve(el);
           });
         }
       };
     }
 
-    return;
-  }, [ref, threshold]); // Empty array ensures that effect is only run on mount and unmount
+    return undefined;
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ref, rootMargin, threshold]);
+
+  useEffect(() => {
+    // if once is enabled disconnect observer
+    if (once && isIntersecting) {
+      observer.current?.disconnect();
+    }
+  }, [isIntersecting, once]);
 
   return { isIntersecting, IntersectingElement };
-}
+};
 export default useOnScreen;

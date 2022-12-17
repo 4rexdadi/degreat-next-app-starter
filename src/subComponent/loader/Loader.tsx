@@ -1,52 +1,31 @@
-import { CSSPlugin, Expo, gsap } from "gsap";
-// Imports Styles
-import {
-  ContentDisplay,
-  Follow,
-  LoaderContainer,
-  Loading,
-  ProgressBar,
-} from "./loaderStyle";
 // import
-import React, { FC, useEffect, useState } from "react";
+import { CSSPlugin, Expo, gsap } from "gsap";
+import { FC, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 import { setOverflow } from "../../store/scrollSlice";
-import { useDispatch } from "react-redux";
+// Import Styles
+import { LoaderContainer } from "./loaderStyle";
 
 gsap.registerPlugin(CSSPlugin);
 
-interface LoaderProps {}
+interface LoaderProps {
+  loadingSpeed: number;
+}
 
-const Loader: FC<LoaderProps> = ({}) => {
+const Loader: FC<LoaderProps> = ({ loadingSpeed }) => {
   const dispatch = useDispatch();
-  const [counter, setCounter] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState<boolean | null>(true);
+  const [counter, setCounter] = useState(0);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    // Disable & Enable HTML From Scrolling
-
-    if (isLoading) {
-      dispatch(setOverflow(false));
-    } else dispatch(setOverflow(true));
-  }, [isLoading]);
-
-  useEffect(() => {
-    const count = setInterval(() => {
-      setCounter((counter: any) =>
-        counter < 100
-          ? counter + 1
-          : (clearInterval(count), setCounter(100), reveal())
-      );
-    }, 25);
-  }, []);
-
+  // reveal function to animate and reveal page using gsap timeline
   const reveal = () => {
     const t1 = gsap.timeline({
       onComplete: () => {
-        setIsLoading(null);
+        setIsLoading(false);
       },
     });
-    t1.to(".follow", {
+    t1.to(".Follow", {
       width: "100%",
       ease: Expo.easeInOut,
       duration: 1.2,
@@ -54,7 +33,7 @@ const Loader: FC<LoaderProps> = ({}) => {
     })
       .to(".hide", { opacity: 0, duration: 0.3 })
       .to(".hide", { display: "none", duration: 0.3 })
-      .to(".follow", {
+      .to(".Follow", {
         height: "100%",
         ease: Expo.easeInOut,
         duration: 0.7,
@@ -65,7 +44,7 @@ const Loader: FC<LoaderProps> = ({}) => {
         ease: Expo.easeInOut,
         duration: 0.7,
       })
-      .to(".follow", {
+      .to(".Follow", {
         opacity: 0,
         duration: 0.01,
       })
@@ -76,28 +55,47 @@ const Loader: FC<LoaderProps> = ({}) => {
       });
   };
 
-  return (
-    <>
-      {isLoading && (
-        <LoaderContainer>
-          <Loading>
-            <Follow className="follow"></Follow>
+  useEffect(() => {
+    // Disable & Enable Scrolling
+    if (isLoading) {
+      dispatch(setOverflow(false));
+    } else dispatch(setOverflow(true));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]);
 
-            <ProgressBar
-              className="hide"
-              id="progress-bar"
-              style={{ width: counter + "%" }}
-            ></ProgressBar>
+  useEffect(() => {
+    // count function to call reveal function when count get to 100
+    const count = setInterval(() => {
+      const isComplete = () => {
+        clearInterval(count);
+        setCounter(100);
+        reveal();
 
-            {/* <Count id="count" className="hide">
-							{counter}%
-						</Count> */}
-          </Loading>
+        return 100;
+      };
 
-          <ContentDisplay className="ContentDisplay"></ContentDisplay>
-        </LoaderContainer>
-      )}
-    </>
+      setCounter((counter) => (counter < 100 ? counter + 1 : isComplete()));
+    }, loadingSpeed);
+  }, [loadingSpeed]);
+
+  return isLoading === false ? null : (
+    <LoaderContainer>
+      <div className="Loading">
+        <div className="Follow" />
+
+        <div
+          className="ProgressBar hide"
+          id="progress-bar"
+          style={{ width: `${counter}%` }}
+        />
+
+        {/* <p id="count" className="Count hide">
+          {counter}%
+        </p> */}
+      </div>
+
+      <div className="ContentDisplay" />
+    </LoaderContainer>
   );
 };
 

@@ -1,29 +1,33 @@
-function clamp(min: number, input: number, max: number) {
+const clamp = (min: number, input: number, max: number): number => {
   return Math.max(min, Math.min(input, max));
-}
-
-const mapRange = (
-  in_min: number,
-  in_max: number,
-  input: number,
-  out_min: number,
-  out_max: number
-) => {
-  return ((input - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
 };
 
-const lerp = (start: number, end: number, amt: number) => {
+const mapRange = (
+  inMin: number,
+  inMax: number,
+  input: number,
+  outMin: number,
+  outMax: number
+): number => {
+  return ((input - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+};
+
+const lerp = (start: number, end: number, amt: number): number => {
   return (1 - amt) * start + amt * end;
 };
 
-const truncate = (value: number, decimals: number) => {
+const truncate = (value: number, decimals: number): number => {
   return parseFloat(value.toFixed(decimals));
 };
 
-const convertPxtoRem = (px: number) => {
-  let rem = px / 16;
+const convertPxtoRem = (px: number): string => {
+  const rem = String(px / 16);
 
-  return rem + "rem";
+  return `${rem}rem`;
 };
 
-export { lerp, clamp, mapRange, truncate, convertPxtoRem };
+const scrollProgress = (scroll: number, limit: number): number => {
+  return scroll / limit;
+};
+
+export { lerp, clamp, mapRange, truncate, convertPxtoRem, scrollProgress };

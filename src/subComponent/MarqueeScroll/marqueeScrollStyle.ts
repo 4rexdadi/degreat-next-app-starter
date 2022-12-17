@@ -12,3 +12,5 @@ export const MarqueeScrollContainer = styled.div`
     transform: translate3d(var(--marquee-progress), 0, 0);
   }
 `;
+
+export default MarqueeScrollContainer;

@@ -81,3 +81,5 @@ export const BoilerplateStyle = styled.createGlobalStyle`
     font: inherit;
   }
 `;
+
+export default BoilerplateStyle;

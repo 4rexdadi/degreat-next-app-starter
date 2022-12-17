@@ -1,13 +1,13 @@
 // Imports
+import gsap from "gsap";
 import { FC, useCallback, useEffect, useRef, useState } from "react";
 
 // Imports Styles
 import { CursorContainer } from "./cursorStyle";
-import gsap from "gsap";
 
 interface CursorProps {}
 
-const Cursor: FC<CursorProps> = ({}) => {
+const Cursor: FC<CursorProps> = () => {
   const cursor = useRef<HTMLDivElement>(null);
   const [isGrab, setIsGrab] = useState(false);
   const [isPointer, setIsPointer] = useState(false);
@@ -32,6 +32,7 @@ const Cursor: FC<CursorProps> = ({}) => {
     return () => {
       window.removeEventListener("mousemove", onMouseMove, false);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasMoved]);
 
   useEffect(() => {
@@ -50,7 +51,7 @@ const Cursor: FC<CursorProps> = ({}) => {
       setIsPointer(false);
     };
 
-    let elements = [
+    const elements = [
       ...document.querySelectorAll(
         "button,a,input,label,[data-cursor='pointer']"
       ),
@@ -77,7 +78,7 @@ const Cursor: FC<CursorProps> = ({}) => {
       setIsGrab(false);
     };
 
-    let elements = [
+    const elements = [
       ...document.querySelectorAll(
         "button,a,input,label,[data-cursor='pointer']"
       ),
@@ -99,7 +100,7 @@ const Cursor: FC<CursorProps> = ({}) => {
   return (
     <CursorContainer
       style={{ opacity: hasMoved ? 1 : 0 }}
-      className={"container"}
+      className="container"
     >
       <div ref={cursor}>
         <div
